@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pytest import fixture
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from definitions import ROOT_DIR
 
 
@@ -19,7 +20,12 @@ def load_user_data(path):
 
 @fixture(scope='session')
 def browser():
-    browser = webdriver.Chrome()
+    capabilities = DesiredCapabilities.CHROME
+    print(capabilities)
+    capabilities['goog:loggingPrefs'] = {'performance': 'ALL'}
+
+
+    browser = webdriver.Chrome(desired_capabilities=capabilities)
     yield browser
     browser.quit()
 
