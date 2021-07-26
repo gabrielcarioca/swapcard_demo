@@ -1,5 +1,5 @@
 class APIRequestNotSent(Exception):
-    """Exception raised when an expected API request was not sent in the current page
+    """Exception raised when an expected API request was not found in performance log for current browser
 
     Attributes:
         message -- explaining which expected API request was not sent in the expected page

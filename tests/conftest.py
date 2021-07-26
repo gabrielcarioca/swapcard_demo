@@ -8,10 +8,11 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from definitions import ROOT_DIR
 
-
+# File containing user and password to access swapcard system
 USER_DATA_JSON_PATH = os.path.join(ROOT_DIR, 'data', 'user.json')
 
 
+# Loading system user and password
 def load_user_data(path):
     with open(path) as data_file:
         data = json.load(data_file)
