@@ -64,7 +64,6 @@ class DemoEventTests:
         )
         event_show_request = api_requests['event_show']
         event_information_show_request = api_requests['event_information_show']
-        #print(f"api requests: {api_requests}")
         del browser.requests
         request_time_delta = timedelta(minutes=2)
 
@@ -113,7 +112,6 @@ class DemoEventTests:
         assert not errors, "Errors occurred:\n{}".format("\n".join(errors))
         assert browser.current_url == "https://app.swapcard.com/event/your-demo-event-demo-swapcard-62"
 
-    @mark.skip
     def test_attendees_search_in_demo_event(self, browser):
         # Page objects
         demo_event_attendees_page = DemoEventAttendeesPage(browser)
@@ -127,11 +125,14 @@ class DemoEventTests:
         demo_event_attendees_page.fill_attendees_search_field(query)
 
         # Validating API requests
-        people_search_request = browser.wait_for_request('https://t.swapcard.com', timeout=15)
+        api_requests = WebDriverWait(browser, 15).until(
+            self.SearchAPIRequestsInBrowser('people_view_search')
+        )
+        people_search_request = api_requests['people_view_search']
         request_time_delta = timedelta(minutes=2)
 
         errors = []
-        people_search_body = json.loads(people_search_request.body.decode().split("\n")[1])
+        people_search_body = json.loads(people_search_request.body.decode())
 
         # Checking people_view_search payload
         event_id = people_search_body['event_id']
