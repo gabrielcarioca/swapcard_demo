@@ -1,21 +1,44 @@
 import json
 import time
+import copy
 
 from datetime import datetime, timedelta
 from login.login_page import LoginPage
 from demo_event.demo_event_home_page import DemoEventHomePage
 from demo_event.demo_event_attendees_page import DemoEventAttendeesPage
+from selenium.webdriver.support.ui import WebDriverWait
 
+from pytest import mark
 
 class DemoEventTests:
     demo_event_id = 'RXZlbnRfMTg5Njc2'
     demo_event_information_id = 'QWR2ZXJ0aXNlbWVudF8yODYz'
     demo_event_view_id = 'RXZlbnRWaWV3Xzc0MjU3'
 
+    class SearchAPIRequestsInBrowser:
+        """ Class with a __call__ method used to validate if expected API requests are found in browser
+
+            Attributes:
+                driver  The driver or browser to check the performance log for the expected API requests
+        """
+        def __init__(self, *api_requests):
+            self.api_requests = api_requests
+
+        def __call__(self, browser):
+            found_request = {}
+            for request in browser.requests:
+                if request.url == 'https://t.swapcard.com/':
+                    for payload in request.body.decode().split("\n"):
+                        payload_json = json.loads(payload.encode())
+                        if payload_json['type'] in self.api_requests:
+                            found_request[payload_json['type']] = copy.deepcopy(request)
+                            found_request[payload_json['type']].body = payload
+
+                    if set(found_request.keys()) == set(self.api_requests):
+                        return found_request
+            return False
+
     def test_demo_event_page(self, browser, user_data):
-
-
-
         # Going to Swapcard app page
         browser.get('https://app.swapcard.com')
 
@@ -34,10 +57,15 @@ class DemoEventTests:
 
         # Going to demo event page
         demo_event_home_page.demo_event_card().click()
+
         # Validating API requests
-        event_show_request = browser.wait_for_request('https://t.swapcard.com', timeout=15)
+        api_requests = WebDriverWait(browser, 15).until(
+            self.SearchAPIRequestsInBrowser('event_show', 'event_information_show')
+        )
+        event_show_request = api_requests['event_show']
+        event_information_show_request = api_requests['event_information_show']
+        #print(f"api requests: {api_requests}")
         del browser.requests
-        event_information_show_request = browser.wait_for_request('https://t.swapcard.com', timeout=15)
         request_time_delta = timedelta(minutes=2)
 
         errors = []
@@ -60,21 +88,21 @@ class DemoEventTests:
             errors.append(
                 f"Request date for event_show was {request_date}")
 
-        # Checking event_interstitial_information_show payload
+        # Checking event_information_show payload
         event_id = event_information_show_body['event_id']
         if not event_id == self.demo_event_id:
             errors.append(
-                f"Event Id payload for event_interstitial_information_show in demo event was {event_id} instead of {self.demo_event_id}")
+                f"Event Id payload for event_information_show in demo event was {event_id} instead of {self.demo_event_id}")
 
         information_id = event_information_show_body['information_id']
         if not information_id == self.demo_event_information_id:
             errors.append(
-                f"Demo event information Id for event_interstitial_information_show in demo event was {information_id} instead of {self.demo_event_information_id}")
+                f"Demo event information Id for event_information_show in demo event was {information_id} instead of {self.demo_event_information_id}")
 
         request_type = event_information_show_body['type']
-        if not request_type == 'event_interstitial_information_show':
+        if not request_type == 'event_information_show':
             errors.append(
-                f"Request type for event_interstitial_information_show in demo event was {request_type} instead of event_interstitial_information_show")
+                f"Request type for event_information_show in demo event was {request_type} instead of event_information_show")
 
         request_date = datetime.strptime(event_information_show_body['time'], '%Y-%m-%dT%H:%M:%S.%fZ')
         if not datetime.now() - request_date < request_time_delta:
@@ -85,6 +113,7 @@ class DemoEventTests:
         assert not errors, "Errors occurred:\n{}".format("\n".join(errors))
         assert browser.current_url == "https://app.swapcard.com/event/your-demo-event-demo-swapcard-62"
 
+    @mark.skip
     def test_attendees_search_in_demo_event(self, browser):
         # Page objects
         demo_event_attendees_page = DemoEventAttendeesPage(browser)

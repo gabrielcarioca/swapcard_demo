@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from Utils.api_request_not_sent import APIRequestNotSent
 
 class DemoEventHomePage:
-    DEMO_EVENT_CARD = (By.XPATH, "//a[@href='/event/your-demo-event-demo-swapcard-62'][.//img]")
+    DEMO_EVENT_CARD = (By.XPATH, "//a[@href='/event/your-demo-event-demo-swapcard-62'][.//img]/div")
     TIMEOUT = 15
 
     def __init__(self, browser):
