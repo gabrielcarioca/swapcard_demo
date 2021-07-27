@@ -5,8 +5,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pytest import fixture
 from seleniumwire import webdriver
-#from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from definitions import ROOT_DIR
 
 # File containing user and password to access swapcard system
@@ -29,11 +27,9 @@ def browser():
 
 
 @fixture(scope='session')
-def firefox_browser():
-    capabilities = DesiredCapabilities.FIREFOX
-    capabilities
-
-    browser = webdriver.Firefox(desired_capabilities=capabilities)
+def abrowser():
+    browser = webdriver.Firefox()
+    browser.maximize_window()
     yield browser
     browser.quit()
 

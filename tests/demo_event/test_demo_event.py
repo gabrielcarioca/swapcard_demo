@@ -8,8 +8,6 @@ from demo_event.demo_event_home_page import DemoEventHomePage
 from demo_event.demo_event_attendees_page import DemoEventAttendeesPage
 from selenium.webdriver.support.ui import WebDriverWait
 
-from pytest import mark
-
 class DemoEventTests:
     demo_event_id = 'RXZlbnRfMTg5Njc2'
     demo_event_information_id = 'QWR2ZXJ0aXNlbWVudF8yODYz'
@@ -26,16 +24,16 @@ class DemoEventTests:
 
         def __call__(self, browser):
             found_request = {}
-            for request in browser.requests:
-                if request.url == 'https://t.swapcard.com/':
-                    for payload in request.body.decode().split("\n"):
-                        payload_json = json.loads(payload.encode())
-                        if payload_json['type'] in self.api_requests:
-                            found_request[payload_json['type']] = copy.deepcopy(request)
-                            found_request[payload_json['type']].body = payload
+            swapcard_requests = [request for request in browser.requests if request.url == 'https://t.swapcard.com/']
+            for request in swapcard_requests:
+                for payload in request.body.decode().split("\n"):
+                    payload_json = json.loads(payload.encode())
+                    if payload_json['type'] in self.api_requests:
+                        found_request[payload_json['type']] = copy.deepcopy(request)
+                        found_request[payload_json['type']].body = payload
 
-                    if set(found_request.keys()) == set(self.api_requests):
-                        return found_request
+                if set(found_request.keys()) == set(self.api_requests):
+                    return found_request
             return False
 
     def test_demo_event_page(self, browser, user_data):
@@ -164,5 +162,10 @@ class DemoEventTests:
         assert not errors, "Errors occurred:\n{}".format("\n".join(errors))
         assert browser.current_url == f"https://app.swapcard.com/event/your-demo-event-demo-swapcard-62/people/RXZlbnRWaWV3Xzc0MjU3?search={query}"
 
-        time.sleep(5)
-        assert True
+        # Asserting users shown in the page
+        search_result_count = demo_event_attendees_page.get_number_of_search_results()
+        attendees_data = demo_event_attendees_page.get_attendees_data()
+        assert len(attendees_data) == search_result_count
+
+        people_with_search_query = [attendee for attendee in attendees_data if query in attendee['name'] or query in attendee['title'] or query in attendee['company']]
+        assert len(people_with_search_query) == search_result_count
