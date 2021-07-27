@@ -1,0 +1,5 @@
+pytest
+pytest-html
+pytest-xdist
+selenium
+selenium-wire
