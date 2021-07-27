@@ -31,3 +31,6 @@ By default, the test will run in Chrome, but it can also run in Firefox if wante
 ### Run in both browsers
 `pytest --browser="Chrome" --browser="Firefox"`  
 The tests will run in both browsers following the `--browser` order.
+
+## Parallel Exection
+To run tests in parallel, simply call using: `pytest -n 2`
