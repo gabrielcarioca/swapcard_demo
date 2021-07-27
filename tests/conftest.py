@@ -18,17 +18,27 @@ def load_user_data(path):
         return data
 
 
-@fixture(scope='session')
-def browser():
-    browser = webdriver.Chrome()
-    browser.maximize_window()
-    yield browser
-    browser.quit()
+def pytest_addoption(parser):
+    parser.addoption(
+        "--browser",
+        action="append",
+        default=[],
+        help="list of browsers to run tests against",
+    )
 
+# Creates a firefox and chrome browser
+def pytest_generate_tests(metafunc):
+    if "browser" in metafunc.fixturenames:
+        metafunc.parametrize("browser", metafunc.config.getoption("browser") if metafunc.config.getoption("browser") else ['Chrome'], indirect=True)
 
 @fixture(scope='session')
-def abrowser():
-    browser = webdriver.Firefox()
+def browser(request):
+    print(f"request: {request}")
+    print(f"request apram: {request.param}")
+    if request.param == 'Firefox':
+        browser = webdriver.Firefox()
+    else:
+        browser = webdriver.Chrome()
     browser.maximize_window()
     yield browser
     browser.quit()
