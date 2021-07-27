@@ -3,8 +3,6 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 
-from Utils.api_request_not_sent import APIRequestNotSent
-
 class DemoEventHomePage:
     DEMO_EVENT_CARD = (By.XPATH, "//a[@href='/event/your-demo-event-demo-swapcard-62'][.//img]/div")
     MESSAGES_ICON = (By.XPATH, "//a[@href='/messages']//span")
