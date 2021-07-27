@@ -14,6 +14,9 @@ Make sure both **chromedriver** and **geckodriver** are in the **PATH** environm
 ## Installing packages and dependencies
 ```pip install -r requirements.txt```
 
+### For Selenium Wire, be sure to have OpenSSL
+Selenium Wire requires OpenSSL for decrypting HTTPS requests. This is normally already installed on most systems, but if it's not you need to install it.
+
 # Running the project
 To run the test, just call `pytest`
 
