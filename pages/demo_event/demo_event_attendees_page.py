@@ -12,7 +12,7 @@ class DemoEventAttendeesPage:
     NUMBER_OF_ATTENDEES_IN_SEARCH_RESULT = (By.XPATH, "//div[./p[contains(text(), 'result')]]")
     ATTENDEES_DIV_XPATH = "//div[@class='infinite-scroll-component ']//a/div/div[not(.//img)]"
 
-    TIMEOUT = 15
+    TIMEOUT = 20
 
     def __init__(self, browser):
         self.browser = browser

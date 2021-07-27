@@ -31,10 +31,8 @@ def pytest_generate_tests(metafunc):
     if "browser" in metafunc.fixturenames:
         metafunc.parametrize("browser", metafunc.config.getoption("browser") if metafunc.config.getoption("browser") else ['Chrome'], indirect=True)
 
-@fixture(scope='session')
+@fixture(scope='module')
 def browser(request):
-    print(f"request: {request}")
-    print(f"request apram: {request.param}")
     if request.param == 'Firefox':
         browser = webdriver.Firefox()
     else:

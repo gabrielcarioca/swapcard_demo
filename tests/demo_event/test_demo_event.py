@@ -56,7 +56,7 @@ class DemoEventTests:
         demo_event_home_page.demo_event_card().click()
 
         # Validating API requests
-        api_requests = WebDriverWait(browser, 15).until(
+        api_requests = WebDriverWait(browser, 20).until(
             self.SearchAPIRequestsInBrowser('event_show', 'event_information_show')
         )
         event_show_request = api_requests['event_show']
@@ -122,7 +122,7 @@ class DemoEventTests:
         demo_event_attendees_page.fill_attendees_search_field(query)
 
         # Validating API requests
-        api_requests = WebDriverWait(browser, 15).until(
+        api_requests = WebDriverWait(browser, 20).until(
             self.SearchAPIRequestsInBrowser('people_view_search')
         )
         people_search_request = api_requests['people_view_search']
