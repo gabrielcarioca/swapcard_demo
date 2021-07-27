@@ -1,11 +1,12 @@
 import json
 import copy
+import time
 
 from datetime import datetime, timedelta
-from login.login_page import LoginPage
 from demo_event.demo_event_home_page import DemoEventHomePage
 from demo_event.demo_event_attendees_page import DemoEventAttendeesPage
 from selenium.webdriver.support.ui import WebDriverWait
+
 
 class DemoEventTests:
     demo_event_id = 'RXZlbnRfMTg5Njc2'
@@ -35,22 +36,11 @@ class DemoEventTests:
                     return found_request
             return False
 
-    def test_demo_event_page(self, browser, user_data):
-        # Going to Swapcard app page
-        browser.get('https://app.swapcard.com')
+    def test_demo_event_page(self, log_in):
+        browser = log_in
 
         # Page objects
-        login_page = LoginPage(browser)
         demo_event_home_page = DemoEventHomePage(browser)
-
-        # Logging in
-        login_page.login_button().click()
-        # Filling e-mail
-        login_page.fill_email(user_data['user'])
-        login_page.send_login_button().click()
-        # Filling password
-        login_page.fill_password(user_data['password'])
-        login_page.send_login_button().click()
 
         # Going to demo event page
         demo_event_home_page.demo_event_card().click()
@@ -109,7 +99,11 @@ class DemoEventTests:
         assert not errors, "Errors occurred:\n{}".format("\n".join(errors))
         assert browser.current_url == "https://app.swapcard.com/event/your-demo-event-demo-swapcard-62"
 
-    def test_attendees_search_in_demo_event(self, browser):
+    def test_attendees_search_in_demo_event(self, log_in):
+        browser = log_in
+        # Going to Swapcard demo event page
+        browser.get("https://app.swapcard.com/event/your-demo-event-demo-swapcard-62")
+
         # Page objects
         demo_event_attendees_page = DemoEventAttendeesPage(browser)
 
