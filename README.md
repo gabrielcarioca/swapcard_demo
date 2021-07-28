@@ -17,6 +17,25 @@ Make sure both **chromedriver** and **geckodriver** are in the **PATH** environm
 ### For Selenium Wire, be sure to have OpenSSL
 Selenium Wire requires OpenSSL for decrypting HTTPS requests. This is normally already installed on most systems, but if it's not you need to install it.
 
+**Linux**
+
+    # For apt based Linux systems
+    sudo apt install openssl
+
+    # For RPM based Linux systems
+    sudo yum install openssl
+
+    # For Linux alpine
+    sudo apk add openssl
+
+**MacOS**
+
+    brew install openssl
+
+**Windows**
+
+No installation is required.
+
 ## Setup.py
 Run `python setup.py install` (make sure that python refers to Python 3)
 
