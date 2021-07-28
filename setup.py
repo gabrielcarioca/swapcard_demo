@@ -1,9 +1,10 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='swapcard_demo',
     version='1.0',
-    packages=['pages'],
+    package_dir={'':'pages'},
+    packages=find_packages("pages", exclude=["tests"]),
     url='',
     license='',
     author='gabrielcarioca',
