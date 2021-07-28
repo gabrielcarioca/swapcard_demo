@@ -19,14 +19,14 @@ class DemoEventAttendeesPage:
         self.wait = WebDriverWait(self.browser, self.TIMEOUT)
 
     def attendees_tab_selector(self):
-        """ Attendees link in the tab selector on top of the event page """
+        """ Attendees link in the tab selector on top of the event page. """
         attendees_tab_selector = self.wait.until(expected_conditions.element_to_be_clickable(self.ATTENDEES_TAB_SELECTOR))
         return attendees_tab_selector
 
     def fill_attendees_search_field(self, search_value):
-        """ Fill search field with search_value to refine the list of event attendees
+        """ Fill search field with search_value to refine the list of event attendees.
 
-        :param str search_value: The value to insert into the attendees search field to refine the list in the event page
+        :param str search_value: The value to insert into the attendees search field to refine the list in the event page.
         """
         attendees_search_field = self.wait.until(expected_conditions.element_to_be_clickable(self.ATTENDEES_SEARCH_FIELD))
         attendees_search_field.send_keys(search_value)
@@ -37,12 +37,24 @@ class DemoEventAttendeesPage:
         assert bool(re.match(r"\d+\sresults", search_result.text))
 
     def get_number_of_search_results(self):
+        """ After filling attendees search field with any value, a text is displayed above the field informing how much attendees matching the query were found.
+
+            This method returns this number.
+        """
         search_result = self.wait.until(
             expected_conditions.visibility_of_element_located(self.NUMBER_OF_ATTENDEES_IN_SEARCH_RESULT))
         search_result_text = search_result.text
         return int(re.search(r"(\d+)\sresults", search_result_text).group(1))
 
     def get_attendees_data(self):
+        """ In attendees page there is a list of all the attendees for the event (or the ones matching a search).
+
+            This method return a list of dictionaries containing data for the attendees with following keys:
+
+            - 'name': The attendees name
+            - 'title': The attendee title or role in its company
+            - 'company': The company the attendee works for
+        """
         attendees = []
 
         attendees_div = self.browser.find_elements(By.XPATH, self.ATTENDEES_DIV_XPATH)

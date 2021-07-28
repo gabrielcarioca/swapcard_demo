@@ -1,6 +1,5 @@
 import json
 import copy
-import time
 
 from datetime import datetime, timedelta
 from demo_event.demo_event_home_page import DemoEventHomePage
@@ -102,7 +101,9 @@ class DemoEventTests:
     def test_attendees_search_in_demo_event(self, log_in):
         browser = log_in
         # Going to Swapcard demo event page
-        browser.get("https://app.swapcard.com/event/your-demo-event-demo-swapcard-62")
+        demo_event_url = "https://app.swapcard.com/event/your-demo-event-demo-swapcard-62"
+        if browser.current_url != demo_event_url:
+            browser.get(demo_event_url)
 
         # Page objects
         demo_event_attendees_page = DemoEventAttendeesPage(browser)
